@@ -1,0 +1,99 @@
+header{
+    background:#0077b6;
+    color:white;
+    padding:15px 30px;
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    position:relative;
+}
+
+nav{
+    display:flex;
+    gap:20px;
+}
+
+nav a{
+    color:white;
+    text-decoration:none;
+    font-weight:bold;
+}
+
+#menu-toggle{
+    display:none;
+}
+
+.hamburger{
+    display:none;
+    font-size:30px;
+    cursor:pointer;
+}
+
+/* TELEFONI */
+@media (max-width:768px){
+
+    .hamburger{
+        display:block;
+    }
+
+    nav{
+        display:none;
+        position:absolute;
+        top:70px;
+        left:0;
+        width:100%;
+        background:#0077b6;
+        flex-direction:column;
+        text-align:center;
+        padding:20px 0;
+    }
+
+    nav a{
+        padding:10px;
+    }
+
+    #menu-toggle:checked ~ nav{
+        display:flex;
+    }
+}
+
+.hero{
+    height:80vh;
+    background:linear-gradient(
+        rgba(0,0,0,0.5),
+        rgba(0,0,0,0.5)
+    ),
+    url("https://images.unsplash.com/photo-1507525428034-b723cf961d3e");
+    background-size:cover;
+    background-position:center;
+    display:flex;
+    flex-direction:column;
+    justify-content:center;
+    align-items:center;
+    color:white;
+    text-align:center;
+}
+
+.hero h2{
+    font-size:60px;
+    margin-bottom:10px;
+}
+
+.hero p{
+    font-size:24px;
+    margin-bottom:20px;
+}
+
+.btn{
+    background:#ff9800;
+    color:white;
+    padding:15px 30px;
+    border-radius:50px;
+    text-decoration:none;
+    font-weight:bold;
+    transition:0.3s;
+}
+
+.btn:hover{
+    background:#e68900;
+}
