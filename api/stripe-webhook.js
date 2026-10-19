@@ -33,3 +33,6 @@ module.exports = async (req, res) => {
     return res.status(400).send('Webhook signature verification failed');
   }
 };
+
+// Stripe deve ricevere il corpo originale per verificare la firma del webhook.
+module.exports.config = { api: { bodyParser: false } };
