@@ -73,10 +73,6 @@ as $$ select exists (select 1 from public.profiles where id = auth.uid() and rol
 drop policy if exists "Profiles readable by owner or admin" on public.profiles;
 create policy "Profiles readable by owner or admin" on public.profiles for select to authenticated
 using (id = auth.uid() or public.is_admin());
-drop policy if exists "Users update own display name" on public.profiles;
-create policy "Users update own display name" on public.profiles for update to authenticated
-using (id = auth.uid()) with check (id = auth.uid() and role = (select p.role from public.profiles p where p.id = auth.uid()));
-
 drop policy if exists "Anyone can read active offers" on public.offers;
 create policy "Anyone can read active offers" on public.offers for select to anon, authenticated
 using (active = true or public.is_admin());
