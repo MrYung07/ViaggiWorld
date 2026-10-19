@@ -1,314 +1,47 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="it">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="description" content="ViaggiWorld: scopri paesi, città e luoghi famosi in tutto il mondo.">
-  <title>ViaggiWorld — Scopri il mondo</title>
-  <link rel="stylesheet" href="style.css">
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="ViaggiWorld: scopri destinazioni, chatta con la community e prenota esperienze.">
+  <title>ViaggiWorld — Il mondo ti aspetta</title>
+  <link rel="stylesheet" href="/style.css">
 </head>
 <body>
-  <header class="site-header">
-    <a class="brand" href="#" onclick="goHome(); return false;">✈ Viaggi<span>World</span></a>
-    <nav class="nav-links" aria-label="Menu principale">
-      <a href="#" onclick="goHome(); return false;">Home</a>
-      <a href="#esplora" onclick="showCountries();">Destinazioni</a>
-      <a href="#contatti">Contatti</a>
-    </nav>
-  </header>
-
-  <section class="hero" id="hero">
-    <div class="hero-content">
-      <div class="eyebrow">Esplora · Sogna · Parti</div>
-      <h1>Il mondo ti aspetta.</h1>
-      <p>Scopri paesi meravigliosi, scegli una città e trova i luoghi famosi da visitare durante il tuo prossimo viaggio.</p>
-      <button class="primary-btn" onclick="showCountries()">🌍 Esplora le destinazioni</button>
+<header class="topbar">
+  <a class="brand" href="#"><span class="brand-icon">✈</span> Viaggi<span class="accent">World</span></a>
+  <nav><a href="#destinazioni">Destinazioni</a><a href="#chat">Community</a><a href="#account">Account</a></nav>
+  <button id="authOpen" class="btn btn-outline">Accedi</button>
+</header>
+<main>
+  <section class="hero">
+    <div class="hero-copy">
+      <span class="eyebrow">ESPLORA · SOGNA · PARTI</span>
+      <h1>Il prossimo viaggio<br><span class="accent">inizia qui.</span></h1>
+      <p>Scopri destinazioni, confronta le offerte e organizza la tua prossima avventura con la community di ViaggiWorld.</p>
+      <a class="btn btn-primary" href="#destinazioni">Esplora le offerte <span>↗</span></a>
+      <div class="hero-note"><span class="live-dot"></span> Ispirazione per il tuo prossimo viaggio</div>
     </div>
+    <div class="hero-visual"><div class="hero-image"></div><div class="floating-card"><span>🌍</span><div><strong>Il mondo ti aspetta</strong><small>La tua prossima storia comincia ora</small></div></div><div class="hero-stamp">TRAVEL<br>MORE ✳</div></div>
   </section>
+  <section class="trust-row"><div><strong>✦</strong> Destinazioni da sogno</div><div><strong>↗</strong> Offerte aggiornabili</div><div><strong>♡</strong> Community di viaggiatori</div><div><strong>⌁</strong> Pagamenti sicuri con Stripe</div></section>
+  <section id="destinazioni" class="section">
+    <div class="section-head"><div><span class="eyebrow">TROVA LA TUA META</span><h2>Viaggi da <span class="accent">ricordare.</span></h2><p>Esplora le proposte disponibili e scegli quella che fa per te.</p></div><span id="offerCount" class="count-pill">Caricamento offerte…</span></div>
+    <div class="filters"><input id="searchOffers" type="search" placeholder="Cerca una destinazione…"><select id="sortOffers" aria-label="Ordina offerte"><option value="featured">In evidenza</option><option value="price-asc">Prezzo crescente</option><option value="price-desc">Prezzo decrescente</option></select></div>
+    <div id="offers" class="offer-grid"><div class="empty-state">Caricamento delle offerte…</div></div>
+  </section>
+  <section class="community-section" id="chat">
+    <div class="community-intro"><span class="eyebrow">LA COMMUNITY</span><h2>Ogni viaggio è<br>più bello <span class="accent">insieme.</span></h2><p>Chiedi consigli, condividi idee e confrontati con altri viaggiatori. Accedi per partecipare alla chat.</p><div class="community-points"><div>✦ Consigli da viaggiatori</div><div>✦ Idee per nuove mete</div><div>✦ Una community in crescita</div></div></div>
+    <div class="chat-card"><div class="chat-header"><div class="chat-avatar">✈</div><div><strong>ViaggiWorld Community</strong><small><span class="live-dot"></span> Chat della community</small></div><span class="chat-lock">●</span></div><div id="chatMessages" class="chat-messages"><div class="chat-welcome">Benvenuto nella community! Accedi per leggere e inviare messaggi.</div></div><form id="chatForm" class="chat-compose"><input id="chatInput" maxlength="1000" placeholder="Accedi per scrivere un messaggio…" disabled><button class="send-btn" type="submit" disabled aria-label="Invia messaggio">➤</button></form><p id="chatStatus" class="chat-status">La chat richiede un account.</p></div>
+  </section>
+  <section id="account" class="account-section"><div><span class="eyebrow">IL TUO SPAZIO</span><h2>Pronto a partire?</h2><p>Crea un account per partecipare alla chat e acquistare le offerte disponibili.</p></div><div class="account-actions"><button id="accountOpen" class="btn btn-primary">Crea account / Accedi</button><button id="logoutBtn" class="btn btn-outline hidden">Esci dall’account</button><span id="accountStatus" class="account-status">Non hai effettuato l'accesso.</span></div></section>
+  <section id="admin" class="section admin-section hidden"><div class="section-head"><div><span class="eyebrow">AREA RISERVATA</span><h2>Gestisci le <span class="accent">offerte.</span></h2><p>Aggiungi destinazioni e aggiorna i prezzi visibili sul sito.</p></div><span class="admin-tag">ADMIN</span></div>
+    <form id="offerForm" class="admin-form"><label>Nome destinazione<input name="title" required maxlength="120" placeholder="Es. Weekend a Parigi"></label><label>Prezzo in euro<input name="price" type="number" min="1" max="100000" step="0.01" required placeholder="199.00"></label><label>Immagine (URL)<input name="image_url" type="url" placeholder="https://…"></label><label>Descrizione<textarea name="description" required maxlength="1000" rows="3" placeholder="Descrivi l'offerta…"></textarea></label><button class="btn btn-primary" type="submit">+ Pubblica offerta</button><p id="adminStatus" class="form-status"></p></form>
+  </section>
+</main>
+<footer><a class="brand" href="#"><span class="brand-icon">✈</span> Viaggi<span class="accent">World</span></a><p>Il mondo è più bello quando lo esplori.</p><small>© <span id="year"></span> ViaggiWorld · Pagamenti elaborati in modo sicuro da Stripe</small></footer>
 
-  <main id="esplora">
-    <div class="breadcrumbs" id="breadcrumbs"></div>
-    <div class="section-heading">
-      <div>
-        <h2 id="sectionTitle">Scegli un paese</h2>
-        <p id="sectionSubtitle">Inizia il tuo viaggio da una destinazione del mondo.</p>
-      </div>
-      <button id="backBtn" class="secondary-btn hidden" onclick="goBack()">← Indietro</button>
-    </div>
-    <div class="search-wrap">
-      <input id="searchInput" type="search" placeholder="🔎 Cerca un paese, una città o un luogo famoso..." aria-label="Cerca destinazioni">
-    </div>
-    <div class="grid" id="cards" aria-live="polite"></div>
-    <div class="hint" id="hint">💡 <strong>Come funziona:</strong> clicca su un paese, poi su una città per scoprire monumenti, attrazioni e luoghi da non perdere.</div>
-  </main>
-
-  <footer id="contatti">
-    <p><strong>✈ ViaggiWorld</strong></p>
-    <p>Il mondo è più bello quando lo esplori.</p>
-    <p>© 2026 ViaggiWorld</p>
-  </footer>
-
-  <script>
-    // Immagini dimostrative da Unsplash. Puoi sostituire gli URL quando vuoi.
-    const countries = [
-      { id: "italia", name: "Italia", description: "Borghi, mare, arte e paesaggi indimenticabili.", image: "https://images.unsplash.com/photo-1516483638261-f4dbaf036963?auto=format&fit=crop&w=1000&q=85", cities: [
-        { id: "roma", name: "Roma", description: "La Città Eterna, tra storia e grandi monumenti.", image: "https://images.unsplash.com/photo-1525874684015-58379d421a52?auto=format&fit=crop&w=1000&q=85", places: [
-          { name: "Colosseo", description: "L'anfiteatro simbolo dell'antica Roma.", image: "https://images.unsplash.com/photo-1552432552-06c0b6f5f6a2?auto=format&fit=crop&w=1000&q=85", tip: "Dedica tempo anche al Foro Romano e al Palatino." },
-          { name: "Fontana di Trevi", description: "Una delle fontane più celebri e scenografiche della città.", image: "https://images.unsplash.com/photo-1555992828-ca4dbe41d294?auto=format&fit=crop&w=1000&q=85", tip: "Vai al mattino presto per trovare meno folla." },
-          { name: "Pantheon", description: "Un capolavoro dell'architettura romana con la sua grande cupola.", image: "https://images.unsplash.com/photo-1552832230-c0197dd311b5?auto=format&fit=crop&w=1000&q=85", tip: "Controlla gli orari e le modalità di ingresso prima della visita." },
-          { name: "Musei Vaticani e Basilica di San Pietro", description: "Arte, storia e uno dei luoghi più importanti di Roma.", image: "https://images.unsplash.com/photo-1531572753322-ad063cecc140?auto=format&fit=crop&w=1000&q=85", tip: "Per i musei è utile verificare disponibilità e biglietti in anticipo." }
-        ]},
-        { id: "venezia", name: "Venezia", description: "Canali, ponti e palazzi storici.", image: "https://images.unsplash.com/photo-1514890547357-a9ee288728e0?auto=format&fit=crop&w=1000&q=85", places: [
-          { name: "Piazza San Marco", description: "Il cuore monumentale di Venezia.", image: "https://images.unsplash.com/photo-1523906834658-6e24ef2386f9?auto=format&fit=crop&w=1000&q=85", tip: "Passeggia sotto i portici e visita la basilica verificando gli orari." },
-          { name: "Palazzo Ducale", description: "Storica sede del potere della Repubblica di Venezia.", image: "https://images.unsplash.com/photo-1514890547357-a9ee288728e0?auto=format&fit=crop&w=1000&q=85", tip: "Abbina la visita a Piazza San Marco." },
-          { name: "Ponte di Rialto", description: "Uno dei ponti più famosi sul Canal Grande.", image: "https://images.unsplash.com/photo-1516483638261-f4dbaf036963?auto=format&fit=crop&w=1000&q=85", tip: "Ammira il Canal Grande anche dal vicino mercato." },
-          { name: "Burano", description: "Isola famosa per le case dai colori vivaci.", image: "https://images.unsplash.com/photo-1514890547357-a9ee288728e0?auto=format&fit=crop&w=1000&q=85", tip: "Controlla gli orari dei vaporetti prima di partire." }
-        ]},
-        { id: "napoli", name: "Napoli", description: "Tradizioni, panorami sul golfo e sapori autentici.", image: "https://images.unsplash.com/photo-1516483638261-f4dbaf036963?auto=format&fit=crop&w=1000&q=85", places: [
-          { name: "Centro storico", description: "Strade ricche di storia, chiese, botteghe e vita locale.", image: "https://images.unsplash.com/photo-1516483638261-f4dbaf036963?auto=format&fit=crop&w=1000&q=85", tip: "Esplora a piedi e prenditi una pausa per assaggiare la pizza napoletana." },
-          { name: "Lungomare e Castel dell'Ovo", description: "Passeggiata sul mare con viste sul golfo.", image: "https://images.unsplash.com/photo-1533105079780-92b9be482077?auto=format&fit=crop&w=1000&q=85", tip: "Il tramonto è un momento ideale per una passeggiata." },
-          { name: "Museo Archeologico Nazionale", description: "Collezioni archeologiche legate anche a Pompei ed Ercolano.", image: "https://images.unsplash.com/photo-1566127992631-137a642a90f4?auto=format&fit=crop&w=1000&q=85", tip: "Controlla le mostre e gli orari aggiornati." },
-          { name: "Spaccanapoli", description: "La strada che attraversa il cuore del centro antico.", image: "https://images.unsplash.com/photo-1516483638261-f4dbaf036963?auto=format&fit=crop&w=1000&q=85", tip: "Abbinala a una visita alle chiese e alle piazze vicine." }
-        ]},
-        { id: "firenze", name: "Firenze", description: "Rinascimento, musei e architettura.", image: "https://images.unsplash.com/photo-1543429257-7eb7e2b3d8b3?auto=format&fit=crop&w=1000&q=85", places: [
-          { name: "Duomo di Firenze", description: "La cattedrale con la celebre cupola del Brunelleschi.", image: "https://images.unsplash.com/photo-1543429257-7eb7e2b3d8b3?auto=format&fit=crop&w=1000&q=85", tip: "Prenota in anticipo l'accesso alla cupola se vuoi salirci." },
-          { name: "Galleria degli Uffizi", description: "Uno dei musei d'arte più importanti d'Italia.", image: "https://images.unsplash.com/photo-1564399579883-451a5d44ec08?auto=format&fit=crop&w=1000&q=85", tip: "Acquista i biglietti tramite i canali ufficiali." },
-          { name: "Ponte Vecchio", description: "Ponte storico con botteghe affacciate sull'Arno.", image: "https://images.unsplash.com/photo-1543429257-7eb7e2b3d8b3?auto=format&fit=crop&w=1000&q=85", tip: "Cerca una vista del ponte dai lungarni." },
-          { name: "Piazzale Michelangelo", description: "Punto panoramico sulla città.", image: "https://images.unsplash.com/photo-1533105079780-92b9be482077?auto=format&fit=crop&w=1000&q=85", tip: "Raggiungilo nel tardo pomeriggio per una vista speciale." }
-        ]},
-        { id: "costiera", name: "Costiera Amalfitana", description: "Scogliere, mare e borghi colorati.", image: "https://images.unsplash.com/photo-1533587851505-d119e13fa0d7?auto=format&fit=crop&w=1000&q=85", places: [
-          { name: "Positano", description: "Case colorate che scendono verso il mare.", image: "https://images.unsplash.com/photo-1533587851505-d119e13fa0d7?auto=format&fit=crop&w=1000&q=85", tip: "Indossa scarpe comode: ci sono molte scale." },
-          { name: "Amalfi e il Duomo", description: "Centro storico con una cattedrale dalla facciata scenografica.", image: "https://images.unsplash.com/photo-1516483638261-f4dbaf036963?auto=format&fit=crop&w=1000&q=85", tip: "Verifica i collegamenti via mare e via terra in base alla stagione." },
-          { name: "Ravello", description: "Giardini panoramici e viste sulla costa.", image: "https://images.unsplash.com/photo-1533105079780-92b9be482077?auto=format&fit=crop&w=1000&q=85", tip: "Visita Villa Rufolo o Villa Cimbrone controllando le aperture." }
-        ]}
-      ]},
-      { id: "francia", name: "Francia", description: "Arte, cucina, borghi e paesaggi romantici.", image: "https://images.unsplash.com/photo-1502602898657-3e91760cbb34?auto=format&fit=crop&w=1000&q=85", cities: [
-        { id: "parigi", name: "Parigi", description: "La città della luce, dell'arte e dell'eleganza.", image: "https://images.unsplash.com/photo-1502602898657-3e91760cbb34?auto=format&fit=crop&w=1000&q=85", places: [
-          { name: "Torre Eiffel", description: "Il simbolo più riconoscibile di Parigi.", image: "https://images.unsplash.com/photo-1502602898657-3e91760cbb34?auto=format&fit=crop&w=1000&q=85", tip: "Prenota i biglietti attraverso il sito ufficiale." },
-          { name: "Museo del Louvre", description: "Museo celebre per la sua collezione d'arte.", image: "https://images.unsplash.com/photo-1499856871958-5b9627545d1a?auto=format&fit=crop&w=1000&q=85", tip: "Scegli in anticipo le opere e le sale che vuoi vedere." },
-          { name: "Cattedrale di Notre-Dame", description: "Storica cattedrale sull'Île de la Cité.", image: "https://images.unsplash.com/photo-1502602898657-3e91760cbb34?auto=format&fit=crop&w=1000&q=85", tip: "Controlla le indicazioni ufficiali per accessi e visite." },
-          { name: "Montmartre", description: "Quartiere collinare con stradine, artisti e la basilica del Sacré-Cœur.", image: "https://images.unsplash.com/photo-1499856871958-5b9627545d1a?auto=format&fit=crop&w=1000&q=85", tip: "Esplora a piedi le strade intorno a Place du Tertre." }
-        ]},
-        { id: "nizza", name: "Nizza", description: "Mare azzurro e atmosfera della Costa Azzurra.", image: "https://images.unsplash.com/photo-1498307833015-e7b400441eb8?auto=format&fit=crop&w=1000&q=85", places: [
-          { name: "Promenade des Anglais", description: "Lungomare famoso lungo la Baia degli Angeli.", image: "https://images.unsplash.com/photo-1498307833015-e7b400441eb8?auto=format&fit=crop&w=1000&q=85", tip: "Ideale per una passeggiata in riva al mare." },
-          { name: "Vieux Nice", description: "Vicoli, mercati e facciate colorate del centro storico.", image: "https://images.unsplash.com/photo-1498307833015-e7b400441eb8?auto=format&fit=crop&w=1000&q=85", tip: "Prova le specialità locali nei mercati e nei piccoli locali." }
-        ]}
-      ]},
-      { id: "spagna", name: "Spagna", description: "Città vivaci, spiagge, arte e sapori.", image: "https://images.unsplash.com/photo-1539037116277-4db20889f2d4?auto=format&fit=crop&w=1000&q=85", cities: [
-        { id: "barcellona", name: "Barcellona", description: "Architettura modernista e vita mediterranea.", image: "https://images.unsplash.com/photo-1539037116277-4db20889f2d4?auto=format&fit=crop&w=1000&q=85", places: [
-          { name: "Sagrada Família", description: "La basilica progettata da Antoni Gaudí.", image: "https://images.unsplash.com/photo-1583779457094-ab6f9e7b9f7e?auto=format&fit=crop&w=1000&q=85", tip: "Prenota la visita in anticipo." },
-          { name: "Park Güell", description: "Parco monumentale con mosaici e viste sulla città.", image: "https://images.unsplash.com/photo-1539037116277-4db20889f2d4?auto=format&fit=crop&w=1000&q=85", tip: "Verifica i biglietti per la zona monumentale." },
-          { name: "Barri Gòtic", description: "Vicoli medievali nel cuore della città.", image: "https://images.unsplash.com/photo-1539037116277-4db20889f2d4?auto=format&fit=crop&w=1000&q=85", tip: "Dedica del tempo anche alle piazze e ai piccoli negozi." }
-        ]},
-        { id: "madrid", name: "Madrid", description: "Musei, piazze e cucina spagnola.", image: "https://images.unsplash.com/photo-1543783207-ec64e4d95325?auto=format&fit=crop&w=1000&q=85", places: [
-          { name: "Museo del Prado", description: "Grande museo con capolavori della pittura europea.", image: "https://images.unsplash.com/photo-1543783207-ec64e4d95325?auto=format&fit=crop&w=1000&q=85", tip: "Controlla le fasce orarie e le esposizioni." },
-          { name: "Palacio Real", description: "Residenza reale storica e sale monumentali.", image: "https://images.unsplash.com/photo-1543783207-ec64e4d95325?auto=format&fit=crop&w=1000&q=85", tip: "Verifica gli orari perché possono cambiare per eventi ufficiali." }
-        ]}
-      ]},
-      { id: "giappone", name: "Giappone", description: "Templi, città moderne e tradizioni millenarie.", image: "https://images.unsplash.com/photo-1493976040374-85c8e12f0c0e?auto=format&fit=crop&w=1000&q=85", cities: [
-        { id: "tokyo", name: "Tokyo", description: "Quartieri futuristici, giardini e cultura pop.", image: "https://images.unsplash.com/photo-1540959733332-eab4de72e4b5?auto=format&fit=crop&w=1000&q=85", places: [
-          { name: "Shibuya Crossing", description: "Il celebre incrocio pedonale nel cuore della città.", image: "https://images.unsplash.com/photo-1540959733332-eab4de72e4b5?auto=format&fit=crop&w=1000&q=85", tip: "Ammira il passaggio dall'alto da un punto panoramico aperto al pubblico." },
-          { name: "Tempio Sensō-ji", description: "Storico tempio buddhista nel quartiere di Asakusa.", image: "https://images.unsplash.com/photo-1493976040374-85c8e12f0c0e?auto=format&fit=crop&w=1000&q=85", tip: "Passeggia anche lungo Nakamise-dori." },
-          { name: "Shinjuku Gyoen", description: "Grande giardino perfetto per una pausa dal ritmo urbano.", image: "https://images.unsplash.com/photo-1493976040374-85c8e12f0c0e?auto=format&fit=crop&w=1000&q=85", tip: "Controlla giorni di chiusura e stagione delle fioriture." }
-        ]},
-        { id: "kyoto", name: "Kyoto", description: "Santuari, giardini e quartieri tradizionali.", image: "https://images.unsplash.com/photo-1493976040374-85c8e12f0c0e?auto=format&fit=crop&w=1000&q=85", places: [
-          { name: "Fushimi Inari-taisha", description: "Santuario noto per i sentieri di torii rossi.", image: "https://images.unsplash.com/photo-1493976040374-85c8e12f0c0e?auto=format&fit=crop&w=1000&q=85", tip: "Vai presto se vuoi camminare con più tranquillità." },
-          { name: "Kinkaku-ji", description: "Il celebre Padiglione d'Oro immerso nel verde.", image: "https://images.unsplash.com/photo-1493976040374-85c8e12f0c0e?auto=format&fit=crop&w=1000&q=85", tip: "Rispetta i percorsi indicati all'interno del complesso." }
-        ]}
-      ]},
-      { id: "usa", name: "Stati Uniti", description: "Metropoli, parchi naturali e grandi panorami.", image: "https://images.unsplash.com/photo-1496588152823-86ff7695e68f?auto=format&fit=crop&w=1000&q=85", cities: [
-        { id: "new-york", name: "New York", description: "Grattacieli, musei e quartieri iconici.", image: "https://images.unsplash.com/photo-1496588152823-86ff7695e68f?auto=format&fit=crop&w=1000&q=85", places: [
-          { name: "Statua della Libertà", description: "Monumento simbolo sul porto di New York.", image: "https://images.unsplash.com/photo-1496588152823-86ff7695e68f?auto=format&fit=crop&w=1000&q=85", tip: "Usa i canali ufficiali per traghetti e biglietti." },
-          { name: "Central Park", description: "Grande parco urbano tra i grattacieli di Manhattan.", image: "https://images.unsplash.com/photo-1518391846015-55a9cc003b25?auto=format&fit=crop&w=1000&q=85", tip: "Scegli una zona del parco da esplorare a piedi o in bici." },
-          { name: "Times Square", description: "Piazza luminosa e vivace nel cuore di Manhattan.", image: "https://images.unsplash.com/photo-1496588152823-86ff7695e68f?auto=format&fit=crop&w=1000&q=85", tip: "La sera le insegne sono particolarmente spettacolari." },
-          { name: "Empire State Building", description: "Grattacielo storico con osservatori panoramici.", image: "https://images.unsplash.com/photo-1496588152823-86ff7695e68f?auto=format&fit=crop&w=1000&q=85", tip: "Controlla le fasce orarie e la visibilità prevista." }
-        ]},
-        { id: "los-angeles", name: "Los Angeles", description: "Cinema, spiagge e quartieri creativi.", image: "https://images.unsplash.com/photo-1534190760961-74e8c1c5c3da?auto=format&fit=crop&w=1000&q=85", places: [
-          { name: "Hollywood Sign", description: "La famosa scritta sulle colline di Hollywood.", image: "https://images.unsplash.com/photo-1534190760961-74e8c1c5c3da?auto=format&fit=crop&w=1000&q=85", tip: "Scegli sentieri autorizzati e verifica le condizioni prima di partire." },
-          { name: "Santa Monica Pier", description: "Molo sul Pacifico con ruota panoramica e attrazioni.", image: "https://images.unsplash.com/photo-1534190760961-74e8c1c5c3da?auto=format&fit=crop&w=1000&q=85", tip: "Goditi il tramonto dalla spiaggia." }
-        ]}
-      ]}
-    ];
-
-    const cardsEl = document.getElementById("cards");
-    const titleEl = document.getElementById("sectionTitle");
-    const subtitleEl = document.getElementById("sectionSubtitle");
-    const breadcrumbsEl = document.getElementById("breadcrumbs");
-    const backBtn = document.getElementById("backBtn");
-    const searchInput = document.getElementById("searchInput");
-    const hintEl = document.getElementById("hint");
-    let currentCountry = null;
-    let currentCity = null;
-    let currentLevel = "countries";
-
-    function makeCard(item, type, country) {
-      const card = document.createElement("button");
-      card.type = "button";
-      card.className = "card";
-      const img = document.createElement("img");
-      img.src = item.image;
-      img.alt = item.name;
-      img.loading = "lazy";
-      img.onerror = () => { img.style.display = "none"; };
-      const body = document.createElement("div");
-      body.className = "card-body";
-      const pill = document.createElement("span");
-      pill.className = "pill";
-      pill.textContent = type === "country" ? "PAESE" : type === "city" ? "CITTÀ" : "LUOGO FAMOSO";
-      const h3 = document.createElement("h3");
-      h3.textContent = item.name;
-      const p = document.createElement("p");
-      p.textContent = item.description;
-      const action = document.createElement("span");
-      action.className = "card-action";
-      action.textContent = type === "place" ? "Scopri il luogo ↗" : type === "city" ? "Scopri cosa visitare →" : "Esplora →";
-      body.append(pill, h3, p, action);
-      card.append(img, body);
-      card.addEventListener("click", () => {
-        if (type === "country") showCities(item.id);
-        else if (type === "city") showPlaces(country.id, item.id);
-        else showPlaceDetails(item);
-      });
-      return card;
-    }
-
-    function render(items, type, country) {
-      cardsEl.replaceChildren();
-      const query = searchInput.value.trim().toLocaleLowerCase("it");
-      const filtered = items.filter(item => {
-        const haystack = [item.name, item.description, ...(item.places || []).map(p => p.name)].join(" ").toLocaleLowerCase("it");
-        return haystack.includes(query);
-      });
-      if (!filtered.length) {
-        const empty = document.createElement("div");
-        empty.className = "empty";
-        empty.textContent = "Non ho trovato risultati. Prova con un altro termine.";
-        cardsEl.append(empty);
-        return;
-      }
-      filtered.forEach(item => cardsEl.append(makeCard(item, type, country)));
-    }
-
-    function setBreadcrumbs(parts) {
-      breadcrumbsEl.replaceChildren();
-      parts.forEach((part, index) => {
-        if (index > 0) {
-          const sep = document.createElement("span");
-          sep.textContent = "›";
-          breadcrumbsEl.append(sep);
-        }
-        if (part.action) {
-          const btn = document.createElement("button");
-          btn.textContent = part.label;
-          btn.addEventListener("click", part.action);
-          breadcrumbsEl.append(btn);
-        } else {
-          const span = document.createElement("span");
-          span.textContent = part.label;
-          breadcrumbsEl.append(span);
-        }
-      });
-    }
-
-    function showCountries() {
-      currentCountry = null; currentCity = null; currentLevel = "countries";
-      titleEl.textContent = "Scegli un paese";
-      subtitleEl.textContent = "Inizia il tuo viaggio da una destinazione del mondo.";
-      setBreadcrumbs([{ label: "Tutte le destinazioni" }]);
-      backBtn.classList.add("hidden");
-      hintEl.classList.remove("hidden");
-      searchInput.value = "";
-      searchInput.placeholder = "🔎 Cerca un paese...";
-      render(countries, "country");
-      document.getElementById("esplora").scrollIntoView({ behavior: "smooth", block: "start" });
-    }
-
-    function showCities(countryId) {
-      currentCountry = countries.find(c => c.id === countryId);
-      if (!currentCountry) return;
-      currentCity = null; currentLevel = "cities";
-      titleEl.textContent = "Città da visitare in " + currentCountry.name;
-      subtitleEl.textContent = "Scegli una città per scoprire i suoi luoghi famosi.";
-      setBreadcrumbs([
-        { label: "Paesi", action: showCountries },
-        { label: currentCountry.name }
-      ]);
-      backBtn.classList.remove("hidden");
-      hintEl.classList.remove("hidden");
-      searchInput.value = "";
-      searchInput.placeholder = "🔎 Cerca una città...";
-      render(currentCountry.cities, "city", currentCountry);
-      document.getElementById("esplora").scrollIntoView({ behavior: "smooth", block: "start" });
-    }
-
-    function showPlaces(countryId, cityId) {
-      currentCountry = countries.find(c => c.id === countryId);
-      if (!currentCountry) return;
-      currentCity = currentCountry.cities.find(c => c.id === cityId);
-      if (!currentCity) return;
-      currentLevel = "places";
-      titleEl.textContent = "Luoghi famosi a " + currentCity.name;
-      subtitleEl.textContent = "Ecco alcune attrazioni da aggiungere al tuo itinerario.";
-      setBreadcrumbs([
-        { label: "Paesi", action: showCountries },
-        { label: currentCountry.name, action: () => showCities(currentCountry.id) },
-        { label: currentCity.name }
-      ]);
-      backBtn.classList.remove("hidden");
-      hintEl.classList.add("hidden");
-      searchInput.value = "";
-      searchInput.placeholder = "🔎 Cerca un monumento o un'attrazione...";
-      render(currentCity.places, "place", currentCountry);
-      document.getElementById("esplora").scrollIntoView({ behavior: "smooth", block: "start" });
-    }
-
-    function showPlaceDetails(place) {
-      // Apre una scheda di approfondimento semplice, senza uscire dalla pagina.
-      const old = document.getElementById("placeDetail");
-      if (old) old.remove();
-      const detail = document.createElement("section");
-      detail.id = "placeDetail";
-      detail.className = "detail-banner";
-      const img = document.createElement("img");
-      img.src = place.image;
-      img.alt = place.name;
-      img.onerror = () => { img.style.display = "none"; };
-      const text = document.createElement("div");
-      text.className = "detail-banner-text";
-      const h = document.createElement("h2");
-      h.textContent = place.name;
-      const p = document.createElement("p");
-      p.textContent = place.description;
-      const tip = document.createElement("p");
-      tip.textContent = "Consiglio: " + place.tip;
-      text.append(h, p, tip);
-      detail.append(img, text);
-      cardsEl.before(detail);
-      detail.scrollIntoView({ behavior: "smooth", block: "center" });
-    }
-
-    function goBack() {
-      const detail = document.getElementById("placeDetail");
-      if (detail) detail.remove();
-      if (currentLevel === "places" && currentCountry) showCities(currentCountry.id);
-      else if (currentLevel === "cities") showCountries();
-      else showCountries();
-    }
-
-    function goHome() {
-      const detail = document.getElementById("placeDetail");
-      if (detail) detail.remove();
-      showCountries();
-      window.scrollTo({ top: 0, behavior: "smooth" });
-    }
-
-    searchInput.addEventListener("input", () => {
-      if (currentLevel === "countries") render(countries, "country");
-      else if (currentLevel === "cities" && currentCountry) render(currentCountry.cities, "city", currentCountry);
-      else if (currentLevel === "places" && currentCity) render(currentCity.places, "place", currentCountry);
-    });
-
-    showCountries();
-  </script>
-</body>
-</html>
+<dialog id="authDialog" class="auth-dialog"><button id="authClose" class="dialog-close" aria-label="Chiudi">×</button><span class="eyebrow">BENTORNATO</span><h2>Entra in <span class="accent">ViaggiWorld.</span></h2><p>Accedi o crea un account per unirti alla community.</p><form id="authForm"><label>Email<input id="authEmail" type="email" autocomplete="email" required placeholder="tu@email.com"></label><label>Password<input id="authPassword" type="password" autocomplete="current-password" minlength="6" required placeholder="Almeno 6 caratteri"></label><div class="auth-buttons"><button class="btn btn-primary" type="submit" name="mode" value="login">Accedi</button><button class="btn btn-outline" type="button" id="signupBtn">Crea account</button></div><p id="authStatus" class="form-status" role="status"></p></form></dialog>
+<div id="toast" class="toast" role="status" aria-live="polite"></div>
+<script type="module" src="/app.js"></script>
+</body></html>
