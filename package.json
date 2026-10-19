@@ -1,0 +1,10 @@
+{
+  "name": "viaggiworld",
+  "version": "1.0.0",
+  "private": true,
+  "description": "ViaggiWorld travel website with Supabase, Vercel and Stripe Checkout",
+  "dependencies": {
+    "@supabase/supabase-js": "^2.57.0",
+    "stripe": "^18.5.0"
+  }
+}
