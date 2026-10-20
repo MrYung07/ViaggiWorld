@@ -17,14 +17,32 @@ function renderOffers(){
   let rows=offers.filter(o=>(o.title+' '+(o.description||'')).toLowerCase().includes(q));
   if(sort==='price-asc')rows.sort((a,b)=>a.price-b.price);if(sort==='price-desc')rows.sort((a,b)=>b.price-a.price);
   $('offerCount').textContent=rows.length+' '+(rows.length===1?'offerta':'offerte');
-  $('offers').innerHTML=rows.length?rows.map(o=>'<article class="offer-card"><div class="offer-image" style="background-image:url(&quot;'+escapeHtml(o.image_url||placeholderImage(o.title))+'&quot;)"><span class="offer-price">'+money(o.price)+'</span></div><div class="offer-body"><h3>'+escapeHtml(o.title)+'</h3><p>'+escapeHtml(o.description)+'</p><div class="offer-footer"><small>Prezzo per persona / offerta</small><button class="buy-btn" data-buy="'+escapeHtml(o.id)+'">Prenota ↗</button></div></div></article>').join(''):'<div class="empty-state">Non ci sono offerte che corrispondono alla ricerca.</div>';
+  $('offers').innerHTML=rows.length?rows.map(o=>'<article class="offer-card"><div class="offer-image" style="background-image:url(&quot;'+escapeHtml(o.image_url||placeholderImage(o.title))+'&quot;)"><span class="offer-price">'+money(o.price)+'</span></div><div class="offer-body"><h3>'+escapeHtml(o.title)+'</h3><p>'+escapeHtml(o.description)+'</p><div class="offer-footer"><small>Prezzo per persona / offerta</small><div class="offer-actions"><button class="buy-btn" data-buy="'+escapeHtml(o.id)+'">Prenota ↗</button>'+(profile&&profile.role==='admin'?'<button class="delete-offer-btn" data-delete-offer="'+escapeHtml(o.id)+'" aria-label="Elimina '+escapeHtml(o.title)+'" title="Elimina offerta">🗑</button>':'')+'</div></div></div></article>').join(''):'<div class="empty-state">Non ci sono offerte che corrispondono alla ricerca.</div>';
   document.querySelectorAll('[data-buy]').forEach(b=>b.addEventListener('click',()=>checkout(b.dataset.buy,b)));
+  document.querySelectorAll('[data-delete-offer]').forEach(b=>b.addEventListener('click',()=>deleteOffer(b.dataset.deleteOffer,b)));
 }
 async function loadOffers(){
   if(!supabaseConfigured){offers=[{id:'demo-1',title:'Weekend a Parigi',price:249,description:'Due notti nella città della luce. Esempio dimostrativo: collega Supabase per pubblicare offerte reali.',image_url:'https://images.unsplash.com/photo-1502602898657-3e91760cbb34?auto=format&fit=crop&w=1000&q=85'},{id:'demo-2',title:'Alla scoperta di Kyoto',price:389,description:'Templi, giardini e tradizioni giapponesi. Esempio dimostrativo, non acquistabile.',image_url:'https://images.unsplash.com/photo-1493976040374-85c8e12f0c0e?auto=format&fit=crop&w=1000&q=85'},{id:'demo-3',title:'Costiera Amalfitana',price:179,description:'Borghi colorati, mare e panorami indimenticabili. Esempio dimostrativo, non acquistabile.',image_url:'https://images.unsplash.com/photo-1533587851505-d119e13fa0d7?auto=format&fit=crop&w=1000&q=85'}];renderOffers();$('offerCount').textContent='Modalità demo';return}
   const {data,error}=await supabase.from('offers').select('id,title,description,image_url,price,currency,active,created_at').eq('active',true).order('created_at',{ascending:false});
   if(error){$('offers').innerHTML='<div class="empty-state">Impossibile caricare le offerte. Controlla la configurazione Supabase.</div>';return}
   offers=data||[];renderOffers();
+}
+async function deleteOffer(id,button){
+  if(!profile||profile.role!=='admin'||!supabase)return;
+  const offer=offers.find(o=>String(o.id)===String(id));
+  if(!offer)return;
+  if(!window.confirm('Vuoi eliminare definitivamente l’offerta "'+offer.title+'"?'))return;
+  button.disabled=true;
+  button.textContent='…';
+  const {error}=await supabase.from('offers').delete().eq('id',id);
+  if(error){
+    toast('Eliminazione non riuscita: '+error.message);
+    button.disabled=false;
+    button.textContent='🗑';
+    return;
+  }
+  toast('Offerta eliminata.');
+  await loadOffers();
 }
 async function checkout(id,button){
   if(String(id).startsWith('demo-')){toast('Modalità demo: configura Supabase e Stripe per attivare i pagamenti.');return}
