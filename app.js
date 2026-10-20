@@ -12,6 +12,7 @@ function toast(message){const el=$('toast');el.textContent=message;el.classList.
 function money(value){return new Intl.NumberFormat('it-IT',{style:'currency',currency:'EUR'}).format(Number(value))}
 function escapeHtml(value=''){return String(value).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}
 function placeholderImage(title){return 'https://images.unsplash.com/photo-1488646953014-85cb44e25828?auto=format&fit=crop&w=1000&q=80'}
+
 function renderOffers(){
   const q=$('searchOffers').value.trim().toLowerCase();const sort=$('sortOffers').value;
   let rows=offers.filter(o=>(o.title+' '+(o.description||'')).toLowerCase().includes(q));
@@ -44,12 +45,8 @@ async function deleteOffer(id,button){
   toast('Offerta eliminata.');
   await loadOffers();
 }
-async function checkout(id,button){
-  if(String(id).startsWith('demo-')){toast('Modalità demo: configura Supabase e Stripe per attivare i pagamenti.');return}
-  if(!user){$('authDialog').showModal();toast('Accedi o crea un account prima di prenotare.');return}
-  button.disabled=true;button.textContent='Attendi…';
-  try{const {data:{session}}=await supabase.auth.getSession();const response=await fetch('/api/create-checkout-session',{method:'POST',headers:{'Content-Type':'application/json',Authorization:'Bearer '+session.access_token},body:JSON.stringify({offerId:id})});const result=await response.json();if(!response.ok)throw new Error(result.error||'Non è stato possibile avviare il pagamento.');window.location.href=result.url}
-  catch(e){toast(e.message||'Errore durante il pagamento.');button.disabled=false;button.textContent='Prenota ↗'}
+function checkout(id, button) {
+  window.location.href = '/manutenzione.html';
 }
 function setUserUI(){
   $('authOpen').textContent=user?'Account':'Accedi';$('logoutBtn').classList.toggle('hidden',!user);$('accountStatus').textContent=user?'Connesso come '+user.email:'Non hai effettuato l’accesso.';$('chatInput').disabled=!user;$('chatInput').placeholder=user?'Scrivi un messaggio…':'Accedi per scrivere un messaggio…';$('chatForm').querySelector('button').disabled=!user;$('chatStatus').textContent=user?'Rispetta gli altri viaggiatori e non condividere dati personali.':'La chat richiede un account.';$('admin').classList.toggle('hidden',!profile||profile.role!=='admin');
